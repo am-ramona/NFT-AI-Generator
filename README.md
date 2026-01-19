@@ -49,6 +49,7 @@
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Architecture Screen Shot][architecture-screenshot]]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -114,6 +115,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 <!-- - [x] Add Changelog -->
 - [ ] Change message notifications for
+
     - [ ] Connect Wallet
     - [ ] Form inputs ( name and Description || Prompt )
 
@@ -149,6 +151,7 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 
 [product-screenshot]: src/assets/images/ai-nft-generator.png
+[architecture-screenshot]: src/assets/images/Miro_design-architecture.png
 
 [React.js]: https://img.shields.io/badge/React%20-%20Frontend%20Framework-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
