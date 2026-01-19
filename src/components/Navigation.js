@@ -2,9 +2,21 @@ import { ethers } from 'ethers';
 
 const Navigation = ({ account, setAccount }) => {
     const connectHandler = async () => {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const account = ethers.utils.getAddress(accounts[0])
-        setAccount(account);
+
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const account = ethers.utils.getAddress(accounts[0])
+            setAccount(account);
+
+            // Switch to Hardhat network (31337)
+            await window.ethereum.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: "0x7a69" }] // 0x7a69 = 31337
+            })
+
+        } catch (err) {
+            console.error("Wallet connection / network switch error:", err)
+        }
     }
 
     return (

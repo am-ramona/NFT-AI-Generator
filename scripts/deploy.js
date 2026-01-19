@@ -1,4 +1,5 @@
-const hre = require("hardhat");
+const hre = require("hardhat")
+\import { ethers } from 'ethers'
 
 async function main() {
   const NAME = "AI Generated NFT"

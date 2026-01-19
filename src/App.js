@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { NFTStorage, File } from 'nft.storage'
-import { Buffer } from 'buffer';
+// import { Buffer } from 'buffer';
 import { ethers } from 'ethers';
-import axios from 'axios';
+
+import { PinataSDK } from 'pinata'
 
 // Components
 import Spinner from 'react-bootstrap/Spinner';
@@ -13,6 +14,11 @@ import NFT from './abis/NFT.json'
 
 // Config
 import config from './config.json';
+
+const pinata = new PinataSDK({
+  pinataJwt: "",
+  pinataGateway: import.meta.env.PINATA_GATEWAY_URL
+})
 
 function App() {
   const [provider, setProvider] = useState(null)
@@ -27,14 +33,48 @@ function App() {
   const [message, setMessage] = useState("")
   const [isWaiting, setIsWaiting] = useState(false)
 
+    // Convert blob URL to base64
+  const blobToBase64 = (blob) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+
   const loadBlockchainData = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    if (!window.ethereum) {
+      alert("Please install MetaMask")
+      return
+    }
+
+    await window.ethereum.request({ method: 'eth_requestAccounts' })
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any")
     setProvider(provider)
+
+    console.log('provider', provider)
 
     const network = await provider.getNetwork()
 
-    const nft = new ethers.Contract(config[network.chainId].nft.address, NFT, provider)
+    console.log('network', network)
+
+    if (!config[network.chainId]) {
+      alert(`Unsupported network: ${network.chainId}, please connect to the Hardhat network`)
+      return
+    }
+
+    const nft = new ethers.Contract(
+      config[network.chainId].nft.address,
+      NFT,
+      provider
+    )
     setNFT(nft)
+
+    /* --- test if Smart Contract is deployed. --- */
+    // const name = await nft.name()
+    // console.log('name', name) 
+
   }
 
   const submitHandler = async (e) => {
@@ -61,54 +101,106 @@ function App() {
   }
 
   const createImage = async () => {
-    setMessage("Generating Image...")
+    setMessage("Generating Image...");
 
-    // You can replace this with different model API's
-    const URL = `https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2`
+    const prompt = `${name} ${description}`;
 
-    // Send the request
-    const response = await axios({
-      url: URL,
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_HUGGING_FACE_API_KEY}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      data: JSON.stringify({
-        inputs: description, options: { wait_for_model: true },
-      }),
-      responseType: 'arraybuffer',
-    })
+    try {
+      const response = await fetch(
+        `http://localhost:5050/api/generate-image?prompt=${encodeURIComponent(
+          prompt
+        )}`
+      );
 
-    const type = response.headers['content-type']
-    const data = response.data
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
-    const base64data = Buffer.from(data).toString('base64')
-    const img = `data:${type};base64,` + base64data // <-- This is so we can render it on the page
-    setImage(img)
+      // Convert response to blob
+      const blob = await response.blob();
+      // Create a temporary URL to display
+      const url = URL.createObjectURL(blob);
+      setImage(url);
+      return url;
+    } catch (err) {
+      console.error("Fetch error:", err);
+      // setError("Failed to generate image. Check console for details.");
+    } finally {
+      setIsWaiting(false);
+    }
 
-    return data
   }
 
   const uploadImage = async (imageData) => {
     setMessage("Uploading Image...")
 
-    // Create instance to NFT.Storage
-    const nftstorage = new NFTStorage({ token: process.env.REACT_APP_NFT_STORAGE_API_KEY })
+  //   // Create instance to NFT.Storage
+  //   const nftstorage = new NFTStorage({
+  //     token: process.env.REACT_APP_NFT_STORAGE_API_KEY?.replace(/"/g, "").trim(),
+  //   });
+  //   console.log("NFTStorage store:", typeof nftstorage.store);
 
-    // Send request to store image
-    const { ipnft } = await nftstorage.store({
-      image: new File([imageData], "image.jpeg", { type: "image/jpeg" }),
-      name: name,
-      description: description,
-    })
+  //    try {
+  //   const res = await fetch("http://localhost:5050/api/upload-nft", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ imageData, name, description }),
+  //   });
+
+  //   const data = await res.json();
+  //   if (!res.ok) throw new Error(data.error || "Upload failed");
+
+  //   console.log("NFT CID:", data.ipnft);
+  //   console.log("Metadata URL:", data.url);
+  //   return data;
+  // } catch (err) {
+  //   console.error("Upload error:", err);
+  //   alert("Failed to upload NFT: " + err.message);
+  // }
+
+    // // Send request to store image
+    // const { ipnft } = await nftstorage.store({
+    //   image: new File([imageData], "image.jpeg", { type: "image/jpeg" }),
+    //   name: name,
+    //   description: description,
+    // })
+
+      if (!imageData) return
+
+    try {
+      // setUploadStatus('Getting upload URL...')
+      const urlResponse = await fetch(`${process.env.REACT_SERVER_URL}/presigned_url`, {
+        method: "GET",
+        headers: {
+          // Handle your own server authorization here
+        }
+      })
+      const data = await urlResponse.json()
+
+      // setUploadStatus('Uploading file...')
+
+      const upload = await pinata.upload.public
+        .file(imageData)
+        .url(data.url)
+
+      if (upload.cid) {
+        // setUploadStatus('File uploaded successfully!')
+        const ipfsLink = await pinata.gateways.public.convert(upload.cid)
+        // setLink(ipfsLink)
+      } else {
+        // setUploadStatus('Upload failed')
+      }
+    } catch (error) {
+      // setUploadStatus(`Error: ${error instanceof Error ? error.message : String(error)}`)
+    }
+
+
 
     // Save the URL
-    const url = `https://ipfs.io/ipfs/${ipnft}/metadata.json`
-    setURL(url)
+    // const url = `https://ipfs.io/ipfs/${ipnft}/metadata.json`
+    // setURL(url)
 
-    return url
+    // return url
   }
 
   const mintImage = async (tokenURI) => {
@@ -120,8 +212,28 @@ function App() {
   }
 
   useEffect(() => {
-    loadBlockchainData()
-  }, [])
+    if (account) {
+      loadBlockchainData()
+    }
+
+    console.log('account', account)
+
+    if (window.ethereum) {
+      window.ethereum.on('chainChanged', () => {
+        window.location.reload()
+      })
+
+      window.ethereum.on('accountsChanged', () => {
+        window.location.reload()
+      })
+    }
+
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeAllListeners()
+      }
+    }
+  }, [account])
 
   return (
     <div>
@@ -136,7 +248,7 @@ function App() {
 
         <div className="image">
           {!isWaiting && image ? (
-            <img src={image} alt="AI generated image" />
+            <img src={image} alt="AI generation" />
           ) : isWaiting ? (
             <div className="image__placeholder">
               <Spinner animation="border" />
@@ -150,7 +262,7 @@ function App() {
 
       {!isWaiting && url && (
         <p>
-          View&nbsp;<a href={url} target="_blank" rel="noreferrer">Metadata</a>
+          View&nbsp;<a href={url} target="_blank" referrerPolicy="no-referrer">Metadata</a>
         </p>
       )}
     </div>
