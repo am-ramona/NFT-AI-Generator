@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { NFTStorage, File } from 'nft.storage'
 // import { Buffer } from 'buffer';
 import { ethers } from 'ethers';
 
@@ -15,13 +14,6 @@ import NFT from './abis/NFT.json'
 // Config
 import config from './config.json';
 
-const pinata = new PinataSDK({
-  pinataJwt: "",
-  pinataGateway: process.env.PINATA_GATEWAY_URL
-})
-
-
-console.log("process.env.PINATA_GATEWAY_URL",  process.env.PINATA_GATEWAY_URL)
 function App() {
   const [provider, setProvider] = useState(null)
   const [account, setAccount] = useState(null)
@@ -34,15 +26,6 @@ function App() {
 
   const [message, setMessage] = useState("")
   const [isWaiting, setIsWaiting] = useState(false)
-
-    // Convert blob URL to base64
-  const blobToBase64 = (blob) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
 
   const loadBlockchainData = async () => {
     if (!window.ethereum) {
@@ -138,47 +121,47 @@ function App() {
   const uploadImage = async (imageData) => {
     setMessage("Uploading Image...")
 
-if (!imageData) return;
+    if (!imageData) return;
 
-  try {
-    // 1️⃣ Get presigned URL from your server
-    const urlResponse = await fetch("http://localhost:5050/presigned_url");
-    const { url: presignedUrl } = await urlResponse.json();
+    try {
+      // 1️⃣ Get presigned URL from your server
+      const urlResponse = await fetch("http://localhost:5050/presigned_url");
+      const { url: presignedUrl } = await urlResponse.json();
 
-    // 2️⃣ Convert base64 / dataURL to Blob
-    const blob = await (await fetch(imageData)).blob();
-console.log("presignedUrl", presignedUrl)
+      // 2️⃣ Convert base64 / dataURL to Blob
+      const blob = await (await fetch(imageData)).blob();
+      console.log("presignedUrl", presignedUrl)
 
-const formData = new FormData();
-formData.append("file", blob, "image.jpeg"); 
-    // 3️⃣ Upload the image via fetch POST
-    const uploadResponse = await fetch(presignedUrl, {
-      method: "POST",
-      body: formData,
-      // headers: {
-      //   "Content-Type": "multipart/form-data" // adjust if PNG
-      // }
-    });
+      const formData = new FormData();
+      formData.append("file", blob, "image.jpeg");
+      // 3️⃣ Upload the image via fetch POST
+      const uploadResponse = await fetch(presignedUrl, {
+        method: "POST",
+        body: formData,
+        // headers: {
+        //   "Content-Type": "multipart/form-data" // adjust if PNG
+        // }
+      });
 
-    if (!uploadResponse.ok) {
-      throw new Error(`Upload failed: ${uploadResponse.statusText}`);
+      if (!uploadResponse.ok) {
+        throw new Error(`Upload failed: ${uploadResponse.statusText}`);
+      }
+
+      console.log("Upload successful!");
+
+      // 4️⃣ Generate a permanent gateway URL for NFT metadata
+      // You can extract the CID from the presigned URL
+      const urlObj = new URL(presignedUrl);
+      const cid = urlObj.pathname.split("/")[3]; // example: /v3/files/<CID>
+      const ipfsLink = `https://gateway.pinata.cloud/ipfs/${cid}`;
+      console.log('ipfsLink', ipfsLink)
+
+      setURL(ipfsLink);
+      return ipfsLink;
+    } catch (err) {
+      console.error(err);
+      console.log(`Upload failed: ${err.message}`);
     }
-
-    console.log("Upload successful!");
-
-    // 4️⃣ Generate a permanent gateway URL for NFT metadata
-    // You can extract the CID from the presigned URL
-    const urlObj = new URL(presignedUrl);
-    const cid = urlObj.pathname.split("/")[3]; // example: /v3/files/<CID>
-    const ipfsLink = `https://gateway.pinata.cloud/ipfs/${cid}`;
-    console.log('ipfsLink', ipfsLink)
-
-    setURL(ipfsLink);
-    return ipfsLink;
-  } catch (err) {
-    console.error(err);
-    console.log(`Upload failed: ${err.message}`);
-  }
 
 
     // Save the URL
