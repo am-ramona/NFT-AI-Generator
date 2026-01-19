@@ -45,12 +45,12 @@ app.get('/presigned_url', async (req, res) => {
         })
 
         const url = await pinata.upload.public.createSignedURL({
-            expires: 60 
+            expires: 60
         })
 
         console.log("url", url)
 
-        res.status(200).json({ url }) 
+        res.status(200).json({ url })
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: "Failed to generate presigned URL" })

@@ -12,7 +12,11 @@ contract NFT is ERC721URIStorage {
     uint256 public cost;
 
     // Events
-    event Minted(address indexed minter, uint256 indexed tokenId, string tokenURI);
+    event Minted(
+        address indexed minter,
+        uint256 indexed tokenId,
+        string tokenURI
+    );
     event Withdrawn(address indexed owner, uint256 amount);
 
     constructor(
