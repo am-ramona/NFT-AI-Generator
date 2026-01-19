@@ -17,9 +17,11 @@ import config from './config.json';
 
 const pinata = new PinataSDK({
   pinataJwt: "",
-  pinataGateway: import.meta.env.PINATA_GATEWAY_URL
+  pinataGateway: process.env.PINATA_GATEWAY_URL
 })
 
+
+console.log("process.env.PINATA_GATEWAY_URL",  process.env.PINATA_GATEWAY_URL)
 function App() {
   const [provider, setProvider] = useState(null)
   const [account, setAccount] = useState(null)
@@ -131,6 +133,8 @@ function App() {
 
   }
 
+  console.log("process.env.REACT_SERVER_URL", process.env.REACT_SERVER_URL)
+
   const uploadImage = async (imageData) => {
     setMessage("Uploading Image...")
 
@@ -165,35 +169,76 @@ function App() {
     //   description: description,
     // })
 
-      if (!imageData) return
+    //   if (!imageData) return
 
-    try {
-      // setUploadStatus('Getting upload URL...')
-      const urlResponse = await fetch(`${process.env.REACT_SERVER_URL}/presigned_url`, {
-        method: "GET",
-        headers: {
-          // Handle your own server authorization here
-        }
-      })
-      const data = await urlResponse.json()
+    // try {
+    //   // setUploadStatus('Getting upload URL...')
+    //   const urlResponse = await fetch(`http://localhost:5050/presigned_url`, {
+    //     method: "GET",
+    //     headers: {
+    //       // Handle your own server authorization here
+    //     }
+    //   })
+    //   const data = await urlResponse.json()
 
-      // setUploadStatus('Uploading file...')
+    //   // setUploadStatus('Uploading file...')
 
-      const upload = await pinata.upload.public
-        .file(imageData)
-        .url(data.url)
+    //   const upload = await pinata.upload.public
+    //     .file(imageData)
+    //     .url(data.url)
 
-      if (upload.cid) {
-        // setUploadStatus('File uploaded successfully!')
-        const ipfsLink = await pinata.gateways.public.convert(upload.cid)
-        // setLink(ipfsLink)
-      } else {
-        // setUploadStatus('Upload failed')
-      }
-    } catch (error) {
-      // setUploadStatus(`Error: ${error instanceof Error ? error.message : String(error)}`)
+    //   if (upload.cid) {
+    //     // setUploadStatus('File uploaded successfully!')
+    //     const ipfsLink = await pinata.gateways.public.convert(upload.cid)
+    //     // setLink(ipfsLink)
+    //   } else {
+    //     // setUploadStatus('Upload failed')
+    //   }
+    // } catch (error) {
+    //   // setUploadStatus(`Error: ${error instanceof Error ? error.message : String(error)}`)
+    // }
+
+if (!imageData) return;
+
+  try {
+    // 1️⃣ Get presigned URL from your server
+    const urlResponse = await fetch("http://localhost:5050/presigned_url");
+    const { url: presignedUrl } = await urlResponse.json();
+
+    // 2️⃣ Convert base64 / dataURL to Blob
+    const blob = await (await fetch(imageData)).blob();
+console.log("presignedUrl", presignedUrl)
+
+const formData = new FormData();
+formData.append("file", blob, "image.jpeg"); 
+    // 3️⃣ Upload the image via fetch POST
+    const uploadResponse = await fetch(presignedUrl, {
+      method: "POST",
+      body: formData,
+      // headers: {
+      //   "Content-Type": "multipart/form-data" // adjust if PNG
+      // }
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(`Upload failed: ${uploadResponse.statusText}`);
     }
 
+    console.log("Upload successful!");
+
+    // 4️⃣ Generate a permanent gateway URL for NFT metadata
+    // You can extract the CID from the presigned URL
+    const urlObj = new URL(presignedUrl);
+    const cid = urlObj.pathname.split("/")[3]; // example: /v3/files/<CID>
+    const ipfsLink = `https://gateway.pinata.cloud/ipfs/${cid}`;
+    console.log('ipfsLink', ipfsLink)
+
+    setURL(ipfsLink);
+    return ipfsLink;
+  } catch (err) {
+    console.error(err);
+    console.log(`Upload failed: ${err.message}`);
+  }
 
 
     // Save the URL

@@ -4,7 +4,10 @@ const axios = require("axios");// for process.env.HUGGING_FACE_API_KEY
 const { NFTStorage, File } = require("nft.storage");
 const { PinataSDK } = require('pinata');
 const app = express();
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET','POST','OPTIONS']
+}));
 app.use(express.json());
 
 const fs = require("fs");
@@ -76,20 +79,24 @@ app.get("/api/generate-image", async (req, res) => {
 //     }
 // });
 
-app.get('/presigned_url', async (c) => {
+app.get('/presigned_url', async (req, res) => {
+  try {
+    const pinata = new PinataSDK({
+      pinataJwt: process.env.PINATA_JWT,
+      pinataGateway: process.env.PINATA_GATEWAY_URL
+    })
 
-	// Handle Auth
+    const url = await pinata.upload.public.createSignedURL({
+      expires: 60 // seconds
+    })
 
-  const pinata = new PinataSDK({
-    pinataJwt: process.env.PINATA_JWT,
-    pinataGateway: process.env.PINATA_GATEWAY_URL
-  })
+    console.log("url", url)
 
-  const url = await pinata.upload.public.createSignedURL({
-    expires: 60 // Last for 60 seconds
-  })
-
-  return c.json({ url }, { status: 200 })
+    res.status(200).json({ url }) // ✅ Express response
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Failed to generate presigned URL" })
+  }
 })
 
 app.listen(5050, () => {
