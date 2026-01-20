@@ -1,171 +1,236 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Play:wght@400;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ======================================================
+   LAYERS (Sass-like architecture)
+====================================================== */
+@layer reset, base, layout, components, utilities, themes;
+
+/* ======================================================
+   RESET
+====================================================== */
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
-:root {
-  --clr-white: #FFFFFF;
-  --clr-black: #202020;
-  --clr-blue: #6C63FF;
-  --clr-blue-2: #4c46b6;
+/* ======================================================
+   BASE (Variables = Sass tokens)
+====================================================== */
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Play:wght@400;700&display=swap');
+
+  :root {
+    /* Colors */
+    --clr-white: #ffffff;
+    --clr-black: #202020;
+    --clr-blue: #6c63ff;
+    --clr-blue-2: #4c46b6;
+
+    /* Semantic tokens */
+    --bg: var(--clr-white);
+    --text: var(--clr-black);
+    --primary: var(--clr-blue);
+    --primary-hover: var(--clr-blue-2);
+    --border: var(--clr-blue);
+
+    /* Typography */
+    --font-main: "Play", system-ui, sans-serif;
+
+    /* Layout */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --transition: 250ms ease;
+  }
+
+  body {
+    font-family: var(--font-main);
+    background-color: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
-body {
-  margin: 0;
-  font-family: "Play";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* ======================================================
+   LAYOUT
+====================================================== */
+@layer layout {
+  nav {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    justify-items: center;
+  }
 
-/* ------------------------------------------------------ */
-/* -- NAVIGATION -- */
-
-nav {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-}
-
-.nav__brand {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: 20px;
-}
-
-.nav__brand h1 {
-  color: var(--clr-blue);
-  font-size: clamp(1.75em, 4vw, 2.5em);
-  font-weight: 800;
-}
-
-.nav__connect {
-  width: 175px;
-  height: 50px;
-  margin: 0 auto;
-
-  background-color: var(--clr-blue);
-  color: var(--clr-white);
-
-  border: none;
-  border-radius: 4px;
-
-  font-family: "Play";
-  font-size: 1.10em;
-  font-weight: 600;
-
-  cursor: pointer;
-  transition: all 250ms ease;
-}
-
-.nav__connect:hover {
-  background-color: var(--clr-blue-2);
-}
-
-/* ------------------------------------------------------ */
-/* -- FORM -- */
-
-.form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  min-height: 600px;
-}
-
-form {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-
-  margin: 0 25px
-}
-
-form input[type="text"] {
-  width: 250px;
-  height: 50px;
-  margin: 10px 0;
-  padding: 10px;
-
-  border: 1px solid var(--clr-blue);
-  border-radius: 4px;
-
-  font-size: 1.10em;
-}
-
-form input[type="submit"] {
-  background-color: var(--clr-blue);
-  color: var(--clr-white);
-
-  width: 250px;
-  height: 50px;
-  margin: 10px 0;
-  padding: 10px;
-
-  border: none;
-  border-radius: 4px;
-
-  font-family: "Play";
-  font-size: 1.10em;
-  font-weight: 400;
-
-  cursor: pointer;
-  transition: all 250ms ease;
-}
-
-form input[type="submit"]:hover {
-  background-color: var(--clr-blue-2);
-}
-
-/* ------------------------------------------------------ */
-/* -- IMAGE -- */
-
-.image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  max-width: 90%;
-  width: 512px;
-  height: 512px;
-  margin: 0 25px;
-  border: 3px solid var(--clr-blue);
-  border-radius: 4px;
-
-  overflow: hidden;
-}
-
-.image img {
-  width: 512px;
-  height: 512px;
-  border-radius: 6px;
-}
-
-.image__placeholder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.image__placeholder p {
-  margin: 0 10px;
-}
-
-/* ------------------------------------------------------ */
-/* -- TEXT -- */
-p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-@media screen and (max-width: 768px) {
   .form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 600px;
+  }
+
+  @media (max-width: 768px) {
+    .form {
+      flex-direction: column;
+    }
+  }
+}
+
+  form input[type="text"],
+  form input[type="submit"] {
+    width: 250px;
+    height: 50px;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 1.1em;
+    border-radius: var(--radius-sm);
+  }
+
+/* ======================================================
+   COMPONENTS
+====================================================== */
+@layer components {
+  /* ---------- NAV ---------- */
+  .nav__brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .nav__brand h1 {
+    color: var(--primary);
+    font-size: clamp(1.75em, 4vw, 2.5em);
+    font-weight: 800;
+  }
+
+  .nav__connect {
+    width: 175px;
+    height: 50px;
+    margin: 0 auto;
+    background-color: var(--primary);
+    color: var(--clr-white);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-main);
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition);
+  }
+
+  .nav__connect:hover {
+    background-color: var(--primary-hover);
+  }
+
+  /* ---------- FORM ---------- */
+  form {
+    display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    margin: 0 25px;
+  }
+
+  form input[type="text"] {
+    border: 1px solid var(--border);
+  }
+
+  form input[type="submit"] {
+    background-color: var(--primary);
+    color: var(--clr-white);
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition);
+  }
+
+  form input[type="submit"]:hover {
+    background-color: var(--primary-hover);
+  }
+
+  /* ---------- IMAGE ---------- */
+  .image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 512px;
+    height: 512px;
+    max-width: 90%;
+    margin: 0 25px;
+    border: 3px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+
+  .image__placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .image__placeholder p {
+    margin: 0 10px;
+  }
+}
+
+/* ======================================================
+   UTILITIES (acts like mixins)
+====================================================== */
+@layer utilities {
+  .u-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .u-hidden {
+    display: none;
+  }
+
+  .u-transition {
+    transition: all var(--transition);
+  }
+}
+
+/* ======================================================
+   THEMES (Dark Mode)
+====================================================== */
+@layer themes {
+  /* Auto dark mode */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121212;
+      --text: #f1f1f1;
+      --border: #7b74ff;
+    }
+  }
+
+  /* Manual override */
+  html[data-theme="dark"] {
+    --bg: #121212;
+    --text: #f1f1f1;
+    --border: #7b74ff;
+  }
+
+  html[data-theme="light"] {
+    --bg: var(--clr-white);
+    --text: var(--clr-black);
+    --border: var(--clr-blue);
   }
 }

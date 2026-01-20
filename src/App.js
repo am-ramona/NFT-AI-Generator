@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react';
-// import { Buffer } from 'buffer';
 import { ethers } from 'ethers';
-
-import { PinataSDK } from 'pinata'
 
 // Components
 import Spinner from 'react-bootstrap/Spinner';
