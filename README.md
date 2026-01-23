@@ -92,7 +92,11 @@
    ```sh
    $ npx hardhat run ./scripts/deploy.js --network localhost
    ```
-6. Start frontend
+6. Start backend
+   ```sh
+   $ nodemon server.js
+   ```
+7. Start frontend
    ```sh
    $ npm run start
    ```
