@@ -31,6 +31,7 @@
         <li><a href="#key-features">Key Features</a></li>
         <li><a href="#built-with">Built With</a></li>
         <li><a href="#architecture-overview">Architecture Overview</a></li>
+        <li><a href="#architecture-highlights">Architecture Highlights</a></li>
         <li><a href="#example-workflow">Example Workflow</a></li>
         <li><a href="#what-i-learned">What I Learned</a></li>
       </ul>
