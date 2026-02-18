@@ -80,7 +80,7 @@ This project explores how to:
 <li>Wallet interaction via Ethers.js</li>
 <li>IPFS storage via Pinata</li>
 <li>Full-stack architecture (frontend + backend + smart contracts)</li>
-<li>Responsive UI with loading/error states</li> 
+<li>Responsive UI with loading/error states</li>
 <li>Scalable minting workflow with clear user feedback</li>
 </ul>
 
@@ -111,8 +111,7 @@ This project explores how to:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Architecture Highlights
-
-* Optimized error handling  
+  
 * Modular smart-contract interaction layer  
 * Component-driven UI design  
 * Ready for multi-chain expansion  
@@ -255,62 +254,3 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 [Pollinations-url]: https://pollinations.ai/
 [Node.js]: https://img.shields.io/badge/Node-Server-58a846?style=for-the-badge&logo=node.js&logoColor=58a846
 [Node-url]: https://nodejs.org/
-
-<!-- # NFT-AI-Generator
-
-Production-grade Web3 dApp that lets users generate AI artwork and mint it as NFTs with a smooth, secure minting experience.
-
----
-
-## 🚀 Live Demo
-👉 <add-demo-link-here>
-
----
-
-## ✨ Features
-
-• AI-generated NFT assets  
-• Production-grade mint UX with wallet connection  
-• Gas estimation & transaction status handling  
-• Secure smart-contract interaction  
-• Responsive UI with loading/error states  
-• Clean architecture ready for scaling  
-
----
-
-## 🛠 Tech Stack
-
-Frontend  
-• Next.js • React • TypeScript • TailwindCSS  
-
-Web3  
-• Wagmi • Viem / Ethers.js • WalletConnect • SIWE  
-
-Smart Contracts  
-• Solidity • Hardhat • OpenZeppelin  
-
-Backend / Infra  
-• Node.js APIs  
-• IPFS / NFT metadata storage  
-• CI/CD ready  
-
----
-
-## 🧠 Architecture Highlights
-
-• Optimized RPC calls and error handling  
-• Modular smart-contract interaction layer  
-• Component-driven UI design  
-• Secure environment variable handling  
-• Ready for multi-chain expansion  
-
----
-
-## 📦 Setup
-
-```bash
-git clone https://github.com/am-ramona/NFT-AI-Generator
-cd NFT-AI-Generator
-npm install
-cp .env.example .env
-npm run dev -->
