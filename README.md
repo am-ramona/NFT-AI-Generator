@@ -14,8 +14,8 @@
     <br />
     <a href="https://github.com/am-ramona/NFT-AI-Generator">View Demo</a>
     &middot;
-    <!-- <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    &middot; -->
+    <a href="https://github.com/am-ramona/NFT-AI-Generator/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    &middot;
     <a href="https://github.com/am-ramona/NFT-AI-Generator/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
@@ -50,12 +50,11 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-<!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
-![Product Name Screen Shot][product-screenshot]
-<!-- ![Product Architecture Screen Shot][architecture-screenshot] -->
-<p>Full-stack production-grade Web3 dApp that lets users generate AI artwork and mint it as NFTs on Ethereum with a smooth, scalable, secure and user-friendly minting experience.
 
-Built to demonstrate production-level Web3 architecture, wallet integration, and mint-flow UX optimization.</p>
+![Product Name Screen Shot][product-screenshot] <!-- (https://url.com)  -->
+<span>Full-stack production-grade Web3 dApp that lets users generate AI artwork and mint it as NFTs on Ethereum with a smooth, scalable, secure and user-friendly minting experience.
+
+Built to demonstrate production-level Web3 architecture, wallet integration, and mint-flow UX optimization.</span>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -190,7 +189,7 @@ This project explores how to:
 <!-- USAGE -->
 <!-- ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+This space is to show useful examples of how a project can be used. Additional screenshots, code examples, demos and more resources work well in this space. 
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
@@ -219,17 +218,6 @@ See the [open issues](https://github.com/am-ramona/NFT-AI-Generator/issues) for 
 <!-- ## License
 
 Distributed under the Unlicense License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
-
-<!-- CONTACT -->
-<!-- ## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
