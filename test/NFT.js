@@ -18,7 +18,7 @@ describe('NFT', () => {
     // Setup accounts
     [deployer, minter] = await ethers.getSigners()
 
-    // Deploy Real Estate
+    // Deploy
     const NFT = await ethers.getContractFactory('NFT')
     nft = await NFT.deploy(NAME, SYMBOL, COST)
 
